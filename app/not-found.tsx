@@ -1,6 +1,6 @@
 import Link from 'next/link'
 export const metadata = {
-  title: '明曦 - 咨询',
+  title: '明曦咨询',
   description: 'Page description',
   icons: {
     icon: [

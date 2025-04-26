@@ -22,12 +22,7 @@ export async function POST(request: Request) {
       }
     });
 
-    if (exist) {
-      return NextResponse.json(      
-        { error: "该邮箱已申请过" },         
-        { status: 400 }      
-      );
-    }
+
     
     // 创建邮件传输器
     const transporter = nodemailer.createTransport({
@@ -80,16 +75,33 @@ export async function POST(request: Request) {
       `,
     };
 
-    // 保存到数据库
-    const trial = await prisma.trial.create({
-      data: {
-        name,
-        email,
-        company,
-        wechatAccount,
-        ApplyReason
-      }
-    });
+    // 更新或创建记录
+    let trial;
+    if (exist) {
+      // 如果记录已存在，则更新
+      trial = await prisma.trial.update({
+        where: {
+          email: email
+        },
+        data: {
+          name,
+          company,
+          wechatAccount,
+          ApplyReason,
+        }
+      });
+    } else {
+      // 如果记录不存在，则创建新记录
+      trial = await prisma.trial.create({
+        data: {
+          name,
+          email,
+          company,
+          wechatAccount,
+          ApplyReason
+        }
+      });
+    }
     console.log(data)
     // 发送邮件
     await transporter.sendMail(mailOptions);

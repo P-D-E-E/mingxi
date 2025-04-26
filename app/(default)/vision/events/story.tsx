@@ -1,6 +1,5 @@
 "use client"
 
-
 import { Separator } from "@/components/ui/separator"
 
 import { FormEvent, useEffect, useState } from 'react'
@@ -24,9 +23,8 @@ interface Event {
   description?: string;
   article?: string;
   image?: string;
-  createdAt: string; // 确保包含这个属性
+  createdAt: string;
   status: string;
-  // 添加其他需要的属性
 }
 
 export default function AboutStory() {  
@@ -35,7 +33,7 @@ export default function AboutStory() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const itemsPerPage = 6; // 每页显示6条
+  const itemsPerPage = 6;
 
   // 获取选中的事件数据
   const getSelectedEvents = async () => {     
@@ -81,9 +79,6 @@ export default function AboutStory() {
   const handlePageChange = (page: number) => {
     if (page === currentPage) return;
       getNonSelectedEvents(page);
-      
-      // 保持滚动位置，不跳到页面顶部
-      // 可以使用 ref 来获取分页组件的位置
   };
   
   // 生成页码数组
@@ -107,9 +102,6 @@ export default function AboutStory() {
     return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
   };
 
-  console.log("eventSelected:", eventSelected)
-  console.log("eventNonSelected:", eventNonSelected)
-
   eventSelected.sort((a, b) => {
     return (new Date(a.createdAt) > new Date(b.createdAt)) ? -1 : 1
   });
@@ -121,23 +113,21 @@ export default function AboutStory() {
   return (
     <section>
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="pb-12 md:pb-20">
+        <div className="pb-8 sm:pb-12 md:pb-20">
           <div className="max-w-6xl mx-auto">
             <section>
-              <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                <div className="pb-8 md:pb-12 pt-12">
+              <div className="max-w-6xl mx-auto px-2 sm:px-6">
+                <div className="pb-6 md:pb-12 pt-6 md:pt-12">
                   <div className="lg:flex lg:justify-between">
 
                     {/* Main content */}
                     <div className="lg:grow" data-aos="fade-down" data-aos-delay="200">
-
-                      {/* 上方分隔线 - 增加上边距 */}
                       
-                      {/* 标题 - 向右移动 */}
-                      <h2 className="text-2xl font-bold mb-8 pl-8">最新资讯</h2>
+                      {/* 标题 - 响应式左边距 */}
+                      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-8 pl-2 sm:pl-8">最新资讯</h2>
                       
-                      {/* Articles container - 增加上下内边距 */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 px-6 py-6">
+                      {/* Articles container - 响应式内边距 */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 px-2 sm:px-6 py-3 sm:py-6">
                         {isLoading ? (
                           // 显示骨架屏
                           Array(3).fill(0).map((_, index) => (
@@ -165,8 +155,8 @@ export default function AboutStory() {
                         )}
                       </div>
                       
-                      {/* 下方分隔线 - 增加下边距 */}
-                      <div className="border-b-2 border-rblue-900 mt-10 mb-4"></div>
+                      {/* 下方分隔线 - 响应式边距 */}
+                      <div className="border-b-2 border-rblue-900 mt-6 sm:mt-10 mb-2 sm:mb-4"></div>
 
                     </div>
                   </div>
@@ -174,34 +164,34 @@ export default function AboutStory() {
               </div>
               
               {/* 添加上方分隔线 */}
-              <div className="max-w-6xl mx-auto px-4 sm:px-6">
+              <div className="max-w-6xl mx-auto px-2 sm:px-6">
                 
-                {/* 添加明曦观点标题 */}
-                <h2 className="text-2xl font-bold mb-8 pl-8">明曦观点</h2>
+                {/* 添加明曦观点标题 - 响应式左边距和字体大小 */}
+                <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-8 pl-2 sm:pl-8">明曦观点</h2>
               </div>
               
-              <div className="grid gap-12 sm:grid-cols-2 sm:gap-x-6 md:gap-y-2 items-start">
+              <div className="grid gap-6 sm:gap-12 sm:grid-cols-2 sm:gap-x-6 md:gap-y-8 items-start px-2 sm:px-0">
                 {isLoading ? (
                   // 显示骨架屏
                   Array(itemsPerPage).fill(0).map((_, index) => (
-                    <div key={`skeleton-${index}`} className="h-[200px]">
+                    <div key={`skeleton-${index}`} className="h-auto sm:h-[200px]">
                       <PostItemSkeleton />
                     </div>
                   ))
                 ) : (
                   // 显示实际内容
                   eventNonSelected.map((event, index) => (
-                    <div key={index} className="h-[200px]">
+                    <div key={index} className="h-auto sm:h-[200px]">
                       <PostItemN key={event.id} event={event} />
                     </div>
                   ))
                 )}
               </div>
               
-              {/* 分页组件 */}
-              <div className="mt-8" id="pagination-section">
+              {/* 分页组件 - 响应式边距 */}
+              <div className="mt-6 sm:mt-8 px-2 sm:px-0" id="pagination-section">
                 <Pagination>
-                  <PaginationContent>
+                  <PaginationContent className="flex flex-wrap justify-center">
                     <PaginationItem>
                       <PaginationPrevious 
                         href="#pagination-section"
@@ -209,24 +199,25 @@ export default function AboutStory() {
                           e.preventDefault();
                           if (currentPage > 1) handlePageChange(currentPage - 1);
                         }}
-                        className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                        className={`text-sm sm:text-base ${currentPage === 1 ? "pointer-events-none opacity-50" : ""}`}
                       />
                     </PaginationItem>
                     
                     {generatePagination().map((page, i) => (
                       <PaginationItem key={i}>
                         {page === '...' ? (
-                          <PaginationEllipsis />
+                          <PaginationEllipsis className="text-sm sm:text-base" />
                         ) : (
                           <PaginationLink 
                             href="#pagination-section"
                             isActive={page === currentPage}
                             onClick={(e) => {
                               e.preventDefault();
-                              if (typeof page === 'number') {  // 添加类型检查
+                              if (typeof page === 'number') {
                                 handlePageChange(page);
                               }
                             }}
+                            className="text-sm sm:text-base"
                           >
                             {page}
                           </PaginationLink>
@@ -241,16 +232,16 @@ export default function AboutStory() {
                           e.preventDefault();
                           if (currentPage < totalPages) handlePageChange(currentPage + 1);
                         }}
-                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                        className={`text-sm sm:text-base ${currentPage === totalPages ? "pointer-events-none opacity-50" : ""}`}
                       />
                     </PaginationItem>
                   </PaginationContent>
                 </Pagination>
               </div>
 
-              {/* 添加下方分隔线 */}
-              <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                <div className="border-b-2 border-rblue-900 mt-10 mb-8"></div>
+              {/* 添加下方分隔线 - 响应式边距 */}
+              <div className="max-w-6xl mx-auto px-2 sm:px-6">
+                <div className="border-b-2 border-rblue-900 mt-6 sm:mt-10 mb-4 sm:mb-8"></div>
               </div>
             </section>
           </div>

@@ -110,13 +110,73 @@ function EventsList() {
         }
     };
 
+    // 删除单个事件
+    const deleteEventById = async (id: string) => {
+      setIsLoading(true);
+      try {
+        // 发送删除请求到API
+        const response = await fetch(`/api/event/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error('删除事件失败');
+        }
+
+        // 删除成功后重新获取事件列表
+        fetchEvents(currentPage);
+        alert('事件删除成功');
+      } catch (error) {
+        console.error('删除事件出错:', error);
+        alert('删除事件失败，请稍后重试');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // 处理批量删除事件
+    const handleDeleteEvents = async (skipConfirm = false) => {
+      if (selectedItems.length === 0) {
+        alert('请至少选择一个事件进行删除');
+        return;
+      }
+
+      // 如果不跳过确认，则显示确认对话框
+      if (!skipConfirm) {
+        const confirmDelete = window.confirm(`确定要删除选中的 ${selectedItems.length} 个事件吗？此操作不可撤销。`);
+        if (!confirmDelete) return;
+      }
+
+      setIsLoading(true);
+      try {
+        // 循环删除选中的每个事件
+        for (const id of selectedItems) {
+          await fetch(`/api/event/${id}`, {
+            method: 'DELETE',
+          });
+        }
+
+        // 删除成功后重新获取事件列表
+        fetchEvents(currentPage);
+        // 清空已选项
+        setSelectedItems([]);
+        alert('事件删除成功');
+      } catch (error) {
+        console.error('删除事件出错:', error);
+        alert('删除事件失败，请稍后重试');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
       {/* Page header */}
       <div className="sm:flex sm:justify-between sm:items-center mb-8">
         <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">事件管理 ✨</h1>
         <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-          <DeleteButton />
+          <DeleteButton onDelete={() => handleDeleteEvents(false)} />
           <div className="hidden sm:block">
             <SearchForm onSearch={handleSearch} />
           </div>
@@ -228,6 +288,23 @@ function EventsList() {
                               <span className="sr-only">编辑</span>
                               <svg className="w-8 h-8 fill-current" viewBox="0 0 32 32">
                                 <path d="M19.7 8.3c-.4-.4-1-.4-1.4 0l-10 10c-.2.2-.3.4-.3.7v4c0 .6.4 1 1 1h4c.3 0 .5-.1.7-.3l10-10c.4-.4.4-1 0-1.4l-4-4zM12.6 22H10v-2.6l6-6 2.6 2.6-6 6zm7.4-7.4L17.4 12l1.6-1.6 2.6 2.6-1.6 1.6z" />
+                              </svg>
+                            </button>
+                            
+                            {/* 删除按钮 */}
+                            <button
+                              className="text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 rounded-full"
+                              onClick={() => {
+                                const confirmDelete = window.confirm(`确定要删除事件 "${event.name}" 吗？此操作不可撤销。`);
+                                if (confirmDelete) {
+                                  deleteEventById(event.id);
+                                }
+                              }}
+                            >
+                              <span className="sr-only">删除</span>
+                              <svg className="w-8 h-8 fill-current" viewBox="0 0 32 32">
+                                <path d="M13 15h2v6h-2zM17 15h2v6h-2z" />
+                                <path d="M20 9c0-.6-.4-1-1-1h-6c-.6 0-1 .4-1 1v2H8v2h1v10c0 .6.4 1 1 1h12c.6 0 1-.4 1-1V13h1v-2h-4V9zm-6 1h4v1h-4v-1zm7 3v9H11v-9h10z" />
                               </svg>
                             </button>
                           </div>

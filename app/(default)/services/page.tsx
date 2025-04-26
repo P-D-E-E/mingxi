@@ -1,5 +1,5 @@
 export const metadata = {
-    title: '明曦 - 服务业务',
+    title: '明曦咨询 - 服务业务',
     description: 'Page description',
     icons: {
       icon: [

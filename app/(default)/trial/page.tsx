@@ -15,7 +15,7 @@ export default function Trial() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    const [error, setError] = useState("")
+    const [error, setError] = useState<string|null>("")
     // const submitTrial = async (e: FormEvent<HTMLFormElement>) => {
     //     e.preventDefault()
     //     const res = await fetch('/api/trial', {
@@ -99,7 +99,7 @@ export default function Trial() {
                          value={data.email}
                          onChange={(e) => setData({ ...data, email: e.target.value })}
                          className="form-input w-full" 
-                         placeholder="请输入您的公司名称" 
+                         placeholder="请输入您的邮箱" 
                          required />
                 </div>
               </div>
@@ -169,15 +169,53 @@ export default function Trial() {
       </section>
       {/* 成功消息 */}
       {success && (
-        <div className="mt-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-          <p>申请已成功提交！我们将尽快与您联系。</p>
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="absolute inset-0 bg-black opacity-50" onClick={() => setSuccess(false)}></div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md mx-4 sm:mx-auto relative transform transition-all">
+            <div className="flex items-center justify-center mb-4">
+              <div className="rounded-full bg-green-100 p-3">
+                <svg className="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white text-center">申请已成功提交</h3>
+            <p className="text-gray-500 dark:text-gray-300 text-center mt-2">我们将尽快与您联系。感谢您的耐心等待！</p>
+            <div className="mt-6">
+              <button 
+                onClick={() => setSuccess(false)} 
+                className="btn text-white bg-rblue-900 hover:bg-rblue-400 w-full flex items-center justify-center"
+                >
+                确定
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
       {/* 错误消息 */}
       {error && (
-        <div className="mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <p>{error}</p>
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="absolute inset-0 bg-black opacity-50" onClick={() => setError(null)}></div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md mx-4 sm:mx-auto relative transform transition-all">
+            <div className="flex items-center justify-center mb-4">
+              <div className="rounded-full bg-red-100 p-3">
+                <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white text-center">提交失败</h3>
+            <p className="text-gray-500 dark:text-gray-300 text-center mt-2">{error}</p>
+            <div className="mt-6">
+              <button 
+                onClick={() => setError(null)} 
+                className="btn text-white bg-rblue-900 hover:bg-rblue-400 w-full flex items-center justify-center"
+              >
+                关闭
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>

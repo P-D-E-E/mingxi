@@ -39,6 +39,8 @@ export default function ResourcePage() {
                             alignItems: 'center',
                             display: 'flex',
                             width: '100%',
+                            flexWrap: 'wrap',
+                            gap: '4px',
                         }}
                     >
                         <div style={{ padding: '0px 2px' }}>
@@ -122,17 +124,13 @@ export default function ResourcePage() {
     }
     
     return (
-        <div className="flex flex-col justify-center items-center container mx-auto p-4 mt-40">
-            <h1 className="text-4xl font-bold mb-12">{resourceName}</h1>
-            <h2 className="text-xl  mb-4">作者：明曦中美研究中心</h2>
+        <div className="flex flex-col justify-center items-center container mx-auto px-4 pt-32 md:pt-36 lg:pt-40">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 md:mb-8 lg:mb-12 text-center">{resourceName}</h1>
+            <h2 className="text-lg md:text-lg lg:text-xl mb-4 text-center">作者：明曦中美研究中心</h2>
             {error && <div className="text-red-500">{error}</div>}
-            <div style={{ marginTop: '120px', 
-                          border: '1px solid rgba(0, 0, 0, 0.3)',
-                          width: '55%', 
-                          height: '750px',
-                          margin: '0 auto' }}>
-                <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js"  
-                >
+            
+            <div className="mt-8 md:mt-12 lg:mt-[120px] border border-solid border-[rgba(0,0,0,0.3)] w-full md:w-[75%] lg:w-[55%] h-[500px] md:h-[600px] lg:h-[750px] mx-auto">
+                <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                     <Viewer
                         fileUrl={`/resource/${uniquefilename}`}
                         plugins={[defaultLayoutPluginInstance]}
@@ -140,9 +138,10 @@ export default function ResourcePage() {
                     />
                 </Worker>
             </div>
-            <div className="mt-16 mb-8">
-                <a  className="text-gray-700 hover:text-gray-400"
-                    href="/resources">—— 返回资源列表 ——</a>
+            
+            <div className="mt-8 md:mt-12 lg:mt-16 mb-8 text-center">
+                <a className="text-gray-700 hover:text-gray-400"
+                   href="/resources">—— 返回资源列表 ——</a>
             </div>
         </div>
     );

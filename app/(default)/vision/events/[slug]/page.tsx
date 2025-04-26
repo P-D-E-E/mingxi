@@ -65,8 +65,8 @@ export default async function EventPage({ params }: { params: { slug: string } }
           
           {/* 文章内容区域 - 减小宽度 */}
           <div className="col-span-12 lg:col-span-5 text-left">
-            {/* 文章标题 */}
-            <h1 className="text-3xl md:text-3xl font-bold mb-6">{event.name}</h1>
+            {/* 文章标题 - 移动端字体更小 */}
+            <h1 className="text-2xl md:text-3xl font-bold mb-6">{event.name}</h1>
             
             {/* 文章元信息 */}
             <div className="flex items-center text-gray-500 mb-4">
@@ -78,7 +78,7 @@ export default async function EventPage({ params }: { params: { slug: string } }
             {/* 标题和日期下方的分割线 */}
             <div className="border-b-2 border-gray-300 mt-4 mb-10"></div>
 
-            {/* 文章封面图 - 调整为更小的尺寸 */}
+            {/* 文章封面图 - 移动端更大尺寸 */}
             {event.image && (
               <div className="mb-10">
                 <Image 
@@ -86,7 +86,7 @@ export default async function EventPage({ params }: { params: { slug: string } }
                   alt={event.name || ""}
                   width={600}
                   height={350}
-                  className="rounded-lg w-3/4 h-auto object-cover mx-auto"
+                  className="rounded-lg w-11/12 md:w-3/4 h-auto object-cover mx-auto"
                 />
               </div>
             )}
