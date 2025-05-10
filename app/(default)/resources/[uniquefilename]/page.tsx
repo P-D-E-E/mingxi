@@ -132,7 +132,7 @@ export default function ResourcePage() {
             <div className="mt-8 md:mt-12 lg:mt-[120px] border border-solid border-[rgba(0,0,0,0.3)] w-full md:w-[75%] lg:w-[55%] h-[500px] md:h-[600px] lg:h-[750px] mx-auto">
                 <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                     <Viewer
-                        fileUrl={`/resource/${uniquefilename}`}
+                        fileUrl={`/api/resource/file/${uniquefilename}`}
                         plugins={[defaultLayoutPluginInstance]}
                         localization={zh_CN as unknown as LocalizationMap}      
                     />

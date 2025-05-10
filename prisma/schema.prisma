@@ -94,6 +94,16 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+model PasswordReset {
+  id        String   @id @default(cuid())
+  email     String   
+  code      String   // 存储6位数字验证码
+  createdAt DateTime @default(now())
+  expiresAt DateTime // 验证码过期时间
+  
+  @@index([email])
+}
+
 enum Role {
   ADMIN
   PREMIUM

@@ -3,6 +3,7 @@
 import { signIn } from 'next-auth/react'
 import { useState, FormEvent, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function SignIn() {
   const router = useRouter()
@@ -98,6 +99,17 @@ export default function SignIn() {
                   </div>
                 </div>
               </form>
+              
+              {/* 添加修改密码链接 */}
+              <div className="text-center mt-4">
+                <Link 
+                  href="/reset-password"
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  忘记密码？点击重置
+                </Link>
+              </div>
+              
             </div>
           </div>
         </div>

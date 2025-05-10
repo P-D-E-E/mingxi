@@ -44,13 +44,34 @@ export async function POST(request: Request) {
       to: process.env.EMAIL_USER,
       subject: '[明曦]试用申请',
       html: `
-        <h1>收到新的试用申请</h1>
-        <p><strong>姓名:</strong> ${name}</p>
-        <p><strong>邮箱:</strong> ${email}</p>
-        <p><strong>微信号:</strong> ${wechatAccount}</p>
-        <p><strong>公司:</strong> ${company}</p>
-        <p><strong>申请原因:</strong> ${ApplyReason || '未提供'}</p>
-      `,
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333333;">
+        <div style="background-color: #f7fafc; border-radius: 6px; padding: 20px; margin: 25px 0;">
+          <p style="font-weight: bold; margin-bottom: 12px; font-size: 16px;">申请信息详情：</p>
+          <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+            <tr>
+              <td style="padding: 10px 15px 10px 0; border-bottom: 1px solid #e2e8f0; width: 30%; color: #4a5568;">姓名</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0;"><strong>${name}</strong></td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 15px 10px 0; border-bottom: 1px solid #e2e8f0; color: #4a5568;">邮箱</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0;"><strong>${email}</strong></td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 15px 10px 0; border-bottom: 1px solid #e2e8f0; color: #4a5568;">微信号</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0;"><strong>${wechatAccount}</strong></td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 15px 10px 0; border-bottom: 1px solid #e2e8f0; color: #4a5568;">公司</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0;"><strong>${company}</strong></td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 15px 10px 0; vertical-align: top; color: #4a5568;">申请原因</td>
+              <td style="padding: 10px 0;"><strong>${ApplyReason || '未提供'}</strong></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `,
     };
 
     // 发送确认邮件给用户
@@ -59,20 +80,50 @@ export async function POST(request: Request) {
       to: email,
       subject: '明曦试用申请确认',
       html: `
-        <h1>感谢您的试用申请</h1>
-        <p>尊敬的 ${name}：</p>
-        <p>我们已收到您的明曦试用申请。我们的团队将尽快审核您的申请并与您联系。</p>
-        <p>以下是您提交的信息：</p>
-        <ul>
-          <li>姓名: ${name}</li>
-          <li>邮箱: ${email}</li>
-          <li>微信号: ${wechatAccount}</li>
-          <li>公司: ${company}</li>
-        </ul>
-        <p>如有任何疑问，请随时与我们联系。</p>
-        <p>祝好，</p>
-        <p>明曦团队</p>
-      `,
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333333;">
+        <div style="text-align: center; margin-bottom: 25px;">
+          <h1 style="color: #2c5282; margin-bottom: 15px;">感谢您的试用申请</h1>
+        </div>
+        
+        <div style="font-size: 15px; line-height: 1.6;">
+          <p>尊敬的 <strong>${name}</strong>：</p>
+          <p>我们已收到您的明曦咨询试用申请。我们的团队将尽快审核您的申请并与您联系。</p>
+          
+          <div style="background-color: #f7fafc; border-radius: 6px; padding: 20px; margin: 25px 0;">
+            <p style="font-weight: bold; margin-bottom: 12px;">以下是您提交的信息：</p>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 15px 8px 0; border-bottom: 1px solid #e2e8f0; width: 30%;">姓名</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><strong>${name}</strong></td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 15px 8px 0; border-bottom: 1px solid #e2e8f0;">邮箱</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><strong>${email}</strong></td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 15px 8px 0; border-bottom: 1px solid #e2e8f0;">微信号</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><strong>${wechatAccount}</strong></td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 15px 8px 0;">公司</td>
+                <td style="padding: 8px 0;"><strong>${company}</strong></td>
+              </tr>
+            </table>
+          </div>
+          
+          <p>如有任何疑问，请随时与我们联系。</p>
+          
+          <div style="margin-top: 30px;">
+            <p style="margin-bottom: 5px;">祝好，</p>
+            <p style="font-weight: bold; color: #2c5282;">明曦咨询团队</p>
+          </div>
+        </div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #718096; text-align: center;">
+          <p>此邮件由明曦咨询自动发送，请勿回复。</p>
+        </div>
+      </div>
+    `,
     };
 
     // 更新或创建记录

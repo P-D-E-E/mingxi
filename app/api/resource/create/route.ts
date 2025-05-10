@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
   // 生成唯一文件名并替换中文字符
   const uniqueFileName = `${uuidv4()}.pdf`;
-  const uploadsDir = path.join("public", 'resource');
+  const uploadsDir = path.join("uploads", 'resource');
 
   // 确保 uploads 文件夹存在
   if (!fs.existsSync(uploadsDir)) {

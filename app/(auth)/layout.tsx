@@ -9,7 +9,7 @@ export default function AuthLayout({
   return (
     <>
     <Header/>
-    <main className="grow bg-gradient-to-b from-gray-200 to-white">
+    <main className="grow">
       {children}
     </main>  
     <Footer/>

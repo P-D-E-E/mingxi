@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
         console.log(`生成的唯一文件名: ${uniqueFilename}`);
         
         // 确保目录存在
-        const uploadDir = join(process.cwd(), 'public', 'resource');
+        const uploadDir = join(process.cwd(), 'uploads', 'resource');
         if (!existsSync(uploadDir)) {
           console.log(`创建上传目录: ${uploadDir}`);
           await mkdir(uploadDir, { recursive: true });
