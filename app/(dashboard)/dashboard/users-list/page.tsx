@@ -7,6 +7,13 @@ import DeleteButton from '@/components/delete-button';
 import SearchForm from '@/components/search-form';
 import PaginationNumeric from '@/components/pagination-numeric';
 import PostDate from '@/components/post-date';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import EditIcon from '@mui/icons-material/Edit';
+import dayjs, { Dayjs } from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 
 // 用户类型定义
 interface User {
@@ -16,6 +23,7 @@ interface User {
   role: string;
   createdAt: string;
   updatedAt?: string;
+  expiresAt?: string; // 新增：到期时间
 }
 
 function UsersList() {
@@ -27,7 +35,16 @@ function UsersList() {
   const [selectedRole, setSelectedRole] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
-  const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: 'TRIAL' });
+  const [newUser, setNewUser] = useState({ 
+    name: '', 
+    email: '', 
+    password: '', 
+    role: 'TRIAL',
+    expiresAt: '', // 新增
+    days: 30 // 新增，默认30天
+  });
+  const [editExpireUser, setEditExpireUser] = useState<User | null>(null); // 当前要编辑的用户
+  const [editExpireDate, setEditExpireDate] = useState<Dayjs | null>(null); // 当前选择的日期
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -49,6 +66,22 @@ function UsersList() {
       setIsLoading(false);
     }
   }, [selectedRole, searchTerm, itemsPerPage, currentPage]);
+
+
+  useEffect(() => {
+    setNewUser((prev) => ({
+      ...prev,
+      days: prev.role === 'TRIAL' ? 30 : 365
+    }));
+  }, [newUser.role]);
+
+    // 监听days变化，自动计算expiresAt
+    useEffect(() => {
+      setNewUser((prev) => ({
+        ...prev,
+        expiresAt: dayjs().add(prev.days, 'day').endOf('day').toISOString()
+      }));
+    }, [newUser.days]);
 
   useEffect(() => {
     fetchUsers(1); // 当筛选条件改变时，重置到第一页
@@ -75,7 +108,7 @@ function UsersList() {
     if (response.ok) {
       await fetchUsers(); // 重新获取用户列表
       setShowCreateUserForm(false);
-      setNewUser({ name: '', email: '', password: '', role: 'TRIAL' });
+      setNewUser({ name: '', email: '', password: '', role: 'TRIAL', expiresAt: '', days: 30 });
       setErrorMessage('');
     } else {
       const errorData = await response.json();
@@ -302,6 +335,26 @@ function UsersList() {
                     <option value="PREMIUM">正式用户</option>
                   </select>
                 </div>
+
+                <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="days">
+                  权限天数
+                </label>
+                <input
+                  id="days"
+                  className="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                  type="number"
+                  min={1}
+                  value={newUser.days}
+                  onChange={e => setNewUser({ ...newUser, days: Number(e.target.value) })}
+                  required
+                />
+                <div className="text-xs text-gray-400 mt-1">
+                  到期时间：{dayjs().add(newUser.days, 'day').endOf('day').format('YYYY-MM-DD')}
+                </div>
+              </div>
+
+
               </div>
               
               {errorMessage && (
@@ -384,6 +437,9 @@ function UsersList() {
                         <div className="font-semibold text-left">创建时间</div>
                       </th>
                       <th className="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                        <div className="font-semibold text-left">到期时间</div> {/* 新增 */}
+                      </th>
+                      <th className="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                         <div className="font-semibold text-right">操作</div>
                       </th>
                     </tr>
@@ -437,25 +493,51 @@ function UsersList() {
                               {getRoleName(user.role)}
                             </button>
                           )}
-</td>
+                          </td>
                         <td className="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                          <PostDate dateString={user.createdAt} />
+                          {dayjs(user.createdAt).format('YYYY-MM-DD')}
                         </td>
+                        <td className="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                          <div className="flex items-center space-x-2">
+                            <span
+                              className="cursor-pointer hover:underline"
+                              onClick={user.role != "ADMIN" ? 
+                                () => {
+                                setEditExpireUser(user);
+                                setEditExpireDate(user.expiresAt ? dayjs(user.expiresAt) : dayjs()); 
+                              }
+                              : () => {}
+                            }
+                            >
+                              {user.expiresAt
+                                ? <>{dayjs(user.expiresAt).format('YYYY-MM-DD')}
+                                  
+                                </>
+                                : <span className="text-gray-400">未设置</span>
+                              }
+                            </span>
+                            {
+                              user.role != 'ADMIN' ?
+                            <IconButton
+                              size="small"
+                              onClick={() => {
+                                setEditExpireUser(user);
+                                setEditExpireDate(user.expiresAt ? dayjs(user.expiresAt) : dayjs());
+                              }}
+                              aria-label="编辑到期时间"
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                            : <></>
+                            }
+                          </div>
+                        </td>
+
+
+                        
                         <td className="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
                           <div className="space-x-1 flex items-center justify-end">
-                            {/* 编辑按钮 */}
-                            <button
-                              className="text-slate-400 hover:text-slate-500 dark:text-slate-500 dark:hover:text-slate-400 rounded-full"
-                              onClick={() => {
-                                // 实现编辑用户功能
-                                alert(`编辑用户: ${user.name}`);
-                              }}
-                            >
-                              <span className="sr-only">编辑</span>
-                              <svg className="w-8 h-8 fill-current" viewBox="0 0 32 32">
-                                <path d="M19.7 8.3c-.4-.4-1-.4-1.4 0l-10 10c-.2.2-.3.4-.3.7v4c0 .6.4 1 1 1h4c.3 0 .5-.1.7-.3l10-10c.4-.4.4-1 0-1.4l-4-4zM12.6 22H10v-2.6l6-6 2.6 2.6-6 6zm7.4-7.4L17.4 12l1.6-1.6 2.6 2.6-1.6 1.6z" />
-                              </svg>
-                            </button>
+
                             
                             {/* 删除按钮 - 仅对非管理员显示 */}
                             {user.role !== 'ADMIN' && (
@@ -495,18 +577,74 @@ function UsersList() {
           onPageChange={handlePageChange} 
         />
       </div>
+      
+
+      <Dialog open={!!editExpireUser} onClose={() => setEditExpireUser(null)}>
+        <DialogTitle>修改到期时间</DialogTitle>
+        <DialogContent>
+          <div className="flex flex-col space-y-6">
+          <DatePicker
+            label="到期日期"
+            value={editExpireDate}
+            onChange={(date) => setEditExpireDate(date)}
+            format="YYYY-MM-DD"
+            slotProps={{ textField: { fullWidth: true } }} // 关键：让输入框全宽
+          />
+            <div className="flex space-x-2">
+              <Button variant="outlined" onClick={() => setEditExpireDate(dayjs())}>今天</Button>
+              <Button variant="outlined" onClick={() => setEditExpireDate(dayjs().add(30, 'day'))}>+30天</Button>
+              <Button variant="outlined" onClick={() => setEditExpireDate(dayjs().add(90, 'day'))}>+90天</Button>
+              <Button variant="outlined" onClick={() => setEditExpireDate(dayjs().add(1, 'year'))}>+1年</Button>
+            </div>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditExpireUser(null)}>取消</Button>
+          <Button
+            variant="contained"
+            onClick={async () => {
+              if (!editExpireUser || !editExpireDate) return;
+              // PATCH 请求更新后端
+              const res = await fetch(`/api/users/${editExpireUser.email}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ expiresAt: editExpireDate.endOf('day').toISOString() }),
+              });
+              if (res.ok) {
+                // 本地更新
+                setUsers(users.map(u =>
+                  u.id === editExpireUser.id
+                    ? { ...u, expiresAt: editExpireDate.endOf('day').toISOString() }
+                    : u
+                ));
+                setEditExpireUser(null);
+              } else {
+                alert('更新失败');
+              }
+            }}
+          >
+            保存
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
+
+    
   );
 }
+
 
 export default function Users() {
   return (
     <SelectedItemsProvider>
       <FlyoutProvider>
         <UserProvider>
-          <UsersList />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <UsersList />
+          </LocalizationProvider>
         </UserProvider>
       </FlyoutProvider>
     </SelectedItemsProvider>
   );
-} 
+}

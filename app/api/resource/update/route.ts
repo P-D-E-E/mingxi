@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
         await writeFile(filePath, buffer);
         
         // 更新文件相关字段 - 修改这里，确保路径格式与create API一致
-        updateData.path = `/resource/${uniqueFilename}`;  // 存储相对路径
+        updateData.path = `/uploads/resource/${uniqueFilename}`;  // 存储相对路径
         updateData.uniquefilename = uniqueFilename;
         
         console.log("文件处理完成");

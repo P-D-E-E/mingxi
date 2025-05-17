@@ -73,24 +73,29 @@ export async function DELETE(
   
   return NextResponse.json({ message: "User deleted" });
 }
-
+// ... 其他代码 ...
 export async function PATCH(
   request: Request, 
   { params }: { params: { email: string } }
 ) {
-  const { email } = params; // 从 URL 中获取 email
+  const { email } = params;
   const body = await request.json();
-  const { role } = body; // 从请求体中获取角色
+  const { role, expiresAt } = body; // 支持 role 和 expiresAt
 
   try {
+    // 构建要更新的数据对象
+    const updateData: any = {};
+    if (role !== undefined) updateData.role = role;
+    if (expiresAt !== undefined) updateData.expiresAt = expiresAt;
+
     const updatedUser = await prisma.user.update({
-      where: { email }, // 使用 email 查找用户
-      data: { role },
+      where: { email },
+      data: updateData,
     });
 
     return NextResponse.json(updatedUser, { status: 200 });
-  } catch (error: any) { // 添加类型标注
-    console.error(error); // 打印错误以便调试
+  } catch (error: any) {
+    console.error(error);
     return NextResponse.json({ message: '更新失败', error: error.message }, { status: 500 });
   }
 }

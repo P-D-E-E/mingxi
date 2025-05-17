@@ -55,7 +55,6 @@ export default function Blog() {
         setTotalPages(data.totalPages);
         setError(null);
       } catch (error) {
-        console.error('获取资源失败:', error);
         setError('获取资源失败，请稍后再试');
         // 确保在发生错误时资源为空数组而不是 undefined
         setResources([]);

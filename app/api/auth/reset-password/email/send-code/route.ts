@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     });
     
     // 发送验证码邮件
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: process.env.EMAIL_FROM,
       to: email,
       subject: '明曦咨询-密码重置验证码',
@@ -88,6 +88,7 @@ export async function POST(request: NextRequest) {
     `,
     });
     
+    console.log('邮件发送响应:', info);
     return NextResponse.json({ 
       success: true, 
       message: "验证码已发送到您的邮箱" 

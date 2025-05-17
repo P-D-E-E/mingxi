@@ -63,7 +63,6 @@ export default function AboutStory() {
       setTotalPages(data.pagination.pages);
       setCurrentPage(page);
     } catch (error) {
-      console.error("获取数据失败:", error);
     } finally {
       setIsLoading(false);
     }

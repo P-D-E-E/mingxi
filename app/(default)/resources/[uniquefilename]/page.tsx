@@ -110,7 +110,6 @@ export default function ResourcePage() {
                     setResourceName(data.name);
                 }
             } catch (error) {
-                console.error('获取资源名称失败:', error);
             }
         };
 

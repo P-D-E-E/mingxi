@@ -129,6 +129,7 @@ const handleSubmit = async () => {
       // 明确指定文件名和类型
       formData.append('pdf', selectedFile, selectedFile.name);
       console.log("包含新文件:", selectedFile.name, "类型:", selectedFile.type, "大小:", selectedFile.size);
+      console.log(selectedFile);
     }
 
     // 发送API请求
@@ -335,7 +336,7 @@ const handleSubmit = async () => {
                   ) : resourceData?.uniquefilename ? (
                     // 如果没有新上传的文件，但有现有文件，预览现有文件
                     <Viewer
-                      fileUrl={`/resource/${resourceData.uniquefilename}`}
+                      fileUrl={`/api/resource/file/${resourceData.uniquefilename}`}
                       plugins={[]}
                       localization={zh_CN as unknown as LocalizationMap}
                     />

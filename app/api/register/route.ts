@@ -5,8 +5,8 @@ import prisma from "@/prisma/client"
 export async function POST(request: Request) {
     try {
     const body = await request.json()
-    const { name, email, password, role } = body.data
-    //console.log(body.data)
+    const { name, email, password, role, expiresAt } = body.data   // 1. 增加 expiresAt
+
     if (!name || !email || !password) {
       return NextResponse.json(
         { message: "所有字段都是必填的" },
@@ -19,7 +19,6 @@ export async function POST(request: Request) {
             email: email
         }
     })
-
 
     if (exist) {
       return NextResponse.json(
@@ -34,12 +33,12 @@ export async function POST(request: Request) {
             name,
             email,
             hashedPassword,
-            role: role || 'TRIAL'
+            role: role || 'TRIAL',
+            expiresAt: expiresAt || null   // 2. 写入 expiresAt 字段
         }
     })
     
     return new NextResponse(JSON.stringify(user), {status: 200})
-
 
   } catch (error) {
     return NextResponse.json(

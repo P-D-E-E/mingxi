@@ -53,6 +53,26 @@ export default function EventCreatePanel({ eventData }: EventCreatePanelProps) {
   const imgRef = useRef<HTMLImageElement | null>(null);
   const editorRef = useRef<ReactTextEditorRef>(null);
 
+  const [selectedCount, setSelectedCount] = useState(0);
+  const [selectedLimitReached, setSelectedLimitReached] = useState(false);
+
+  // 检查SELECTED数量
+  const fetchSelectedCount = async () => {
+    try {
+      const res = await fetch('/api/event/selected-count');
+      const data = await res.json();
+      console.log('SELECTED', data.count);
+      setSelectedCount(data.count);
+      setSelectedLimitReached(data.count >= 3);
+    } catch (e) {
+      // 可以根据需要处理错误
+    }
+  };
+
+  useEffect(() => {
+    fetchSelectedCount();
+  }, []);
+
   // 当组件挂载时设置加载状态
   useEffect(() => {
     setIsLoading(true); // 开始加载
@@ -174,7 +194,7 @@ export default function EventCreatePanel({ eventData }: EventCreatePanelProps) {
       }
       
       if (eventType === 'SELECTED' && !croppedImage) {
-        setErrorMessage('精选Event必须上传封面图片');
+        setErrorMessage('最新资讯必须上传封面图片');
         setIsSubmitting(false);
         return;
       }
@@ -287,35 +307,37 @@ export default function EventCreatePanel({ eventData }: EventCreatePanelProps) {
                 </div>
                 
                 {/* Event类型选择 */}
-                <div className="w-1/3">
-                  <label className="block text-m font-medium mb-2">
-                    Event类型
+                <div className="flex space-x-4">
+                <label className="block text-m font-medium mb-1" htmlFor="business-id">Event类型
                     <span className="text-red-500"> *</span>
                   </label>
-                  <div className="flex space-x-4">
-                    <label className="inline-flex items-center">
-                      <input
-                        type="radio"
-                        className="form-radio"
-                        name="eventType"
-                        value="NONSELECTED"
-                        checked={eventType === 'NONSELECTED'}
-                        onChange={() => setEventType('NONSELECTED')}
-                      />
-                      <span className="ml-2">普通Event</span>
-                    </label>
-                    <label className="inline-flex items-center">
-                      <input
-                        type="radio"
-                        className="form-radio"
-                        name="eventType"
-                        value="SELECTED"
-                        checked={eventType === 'SELECTED'}
-                        onChange={() => setEventType('SELECTED')}
-                      />
-                      <span className="ml-2">精选Event</span>
-                    </label>
-                  </div>
+
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio"
+                      name="eventType"
+                      value="NONSELECTED"
+                      checked={eventType === 'NONSELECTED'}
+                      onChange={() => setEventType('NONSELECTED')}
+                    />
+                    <span className="ml-2">明曦观点</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio"
+                      name="eventType"
+                      value="SELECTED"
+                      checked={eventType === 'SELECTED'}
+                      onChange={() => setEventType('SELECTED')}
+                      disabled={selectedLimitReached && eventType !== 'SELECTED'}
+                    />
+                    <span className="ml-2">最新资讯</span>
+                    {selectedLimitReached && eventType !== 'SELECTED' && (
+                      <span className="ml-2 text-xs text-red-500">（最多只能有3个）</span>
+                    )}
+                  </label>
                 </div>
                 
                 {/* 图片上传部分 */}

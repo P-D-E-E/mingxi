@@ -46,6 +46,7 @@ model User {
   nid            Int       @default(autoincrement())
   accounts       Account[]
   sessions       Session[]
+  expiresAt      DateTime? 
 
   @@map("users")
 }

@@ -30,9 +30,6 @@ export default function Contact() {
                 </div>
             </div>
 
-            <p className="text-sm md:text-base lg:text-lg text-gray-600 mb-4" data-aos="zoom-y-out" data-aos-delay="150">
-                美国分公司2025年开张
-            </p>
           </div>
         </section>
     </>

@@ -1,4 +1,7 @@
 import Sidebar from '@/components/ui/sidebar'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 
 export default function DefaultLayout({
   children,
@@ -23,3 +26,4 @@ export default function DefaultLayout({
     </div>
   )
 }
+

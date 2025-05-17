@@ -154,6 +154,7 @@ export async function POST(request: Request) {
       });
     }
     console.log(data)
+    console.log(userMailOptions)
     // 发送邮件
     await transporter.sendMail(mailOptions);
     await transporter.sendMail(userMailOptions);
